@@ -16,6 +16,7 @@ export class App extends Component {
   };
 
   addContact = ({ name, number }) => {
+    // console.log('name: ', name, ' ; number: ', number);
     const normalizedName = name.trim();
     const existName = this.checkExistingName(normalizedName);
     if (existName) {
