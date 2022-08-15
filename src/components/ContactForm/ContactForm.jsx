@@ -8,7 +8,7 @@ const INITIAL_VALUE = { name: '', number: '' };
 
 let schema = yup.object().shape({
   name: yup.string().required(),
-  number: yup.number().required(),
+  number: yup.string().required(),
 });
 
 export default function ContactForm({ onSubmit }) {
