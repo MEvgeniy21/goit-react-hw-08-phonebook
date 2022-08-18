@@ -7,8 +7,21 @@ import { Box } from 'common/Box';
 const INITIAL_VALUE = { name: '', number: '' };
 
 let schema = yup.object().shape({
-  name: yup.string().required(),
-  number: yup.string().required(),
+  name: yup
+    .string()
+    .matches(
+      /^[a-zA-Zа-яА-Я]+(([' -][a-zA-Zа-яА-Я ])?[a-zA-Zа-яА-Я]*)*$/,
+      "Name may contain only letters, apostrophe, dash and spaces. For example Adrian, Jacob Mercer, Charles de Batz de Castelmore d'Artagnan"
+    )
+    .required(),
+  number: yup
+    .string()
+    .min(5)
+    .matches(
+      /\+?\d{1,4}?[-.\s]?\(?\d{1,3}?\)?[-.\s]?\d{1,4}[-.\s]?\d{1,4}[-.\s]?\d{1,9}/,
+      'Phone number must be digits and can contain spaces, dashes, parentheses and can start with +'
+    )
+    .required(),
 });
 
 export default function ContactForm({ onSubmit }) {
@@ -23,33 +36,25 @@ export default function ContactForm({ onSubmit }) {
       onSubmit={handleSubmit}
       validationSchema={schema}
     >
-      <FormBlock autoComplete="off">
-        <Label>
-          Name
-          <Field
-            type="text"
-            name="name"
-            pattern="^[a-zA-Zа-яА-Я]+(([' -][a-zA-Zа-яА-Я ])?[a-zA-Zа-яА-Я]*)*$"
-            title="Name may contain only letters, apostrophe, dash and spaces. For example Adrian, Jacob Mercer, Charles de Batz de Castelmore d'Artagnan"
-            required
-          />
+      {props => (
+        <FormBlock autoComplete="off">
+          <Label htmlFor="name">
+            Name
+            <Field type="text" name="name" id="name" required />
+          </Label>
           <ErrorMessage name="name" component="p" />
-        </Label>
-        <Label>
-          Number
-          <Field
-            type="tel"
-            name="number"
-            pattern="\+?\d{1,4}?[-.\s]?\(?\d{1,3}?\)?[-.\s]?\d{1,4}[-.\s]?\d{1,4}[-.\s]?\d{1,9}"
-            title="Phone number must be digits and can contain spaces, dashes, parentheses and can start with +"
-            required
-          />
-          <ErrorMessage name="number" component="p" />
-        </Label>
-        <Box display="flex" alignItems="center" justifyContent="center">
-          <button type="submit">Add contact</button>
-        </Box>
-      </FormBlock>
+
+          <Label htmlFor="number">
+            Number
+            <Field type="tel" name="number" id="number" required />
+          </Label>
+          <ErrorMessage name="number" render={msg => <div>{msg}</div>} />
+
+          <Box display="flex" alignItems="center" justifyContent="center">
+            <button type="submit">Add contact</button>
+          </Box>
+        </FormBlock>
+      )}
     </Formik>
   );
 }
