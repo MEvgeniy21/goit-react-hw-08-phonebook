@@ -48,7 +48,7 @@ export default function ContactForm({ onSubmit }) {
             Number
             <Field type="tel" name="number" id="number" required />
           </Label>
-          <ErrorMessage name="number" render={msg => <div>{msg}</div>} />
+          <ErrorMessage name="number" component="p" />
 
           <Box display="flex" alignItems="center" justifyContent="center">
             <button type="submit">Add contact</button>
