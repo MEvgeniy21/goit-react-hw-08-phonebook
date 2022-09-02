@@ -1,46 +1,38 @@
-import { Component } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { GlobalStyle } from 'GlobalStyle';
 import { nanoid } from 'nanoid';
 import { Box } from 'common/Box';
 import ContactContainer from 'components/ContactContainer';
 
-export class App extends Component {
-  static LS_KEY = {
-    contacts: 'contacts',
-  };
+export function App() {
+  const LS_KEY = 'contacts';
 
-  state = {
-    contacts: [
-      // { id: 'id-1', name: 'Rosie Simpson', number: '459-12-56' },
-      // { id: 'id-2', name: 'Hermione Kline', number: '443-89-12' },
-      // { id: 'id-3', name: 'Eden Clements', number: '645-17-79' },
-      // { id: 'id-4', name: 'Annie Copeland', number: '227-91-26' },
-    ],
-    filter: '',
-  };
-
-  componentDidMount() {
-    const dataContactsFromLS = JSON.parse(
-      localStorage.getItem(App.LS_KEY.contacts)
-    );
+  const initialContacts = () => {
+    const dataContactsFromLS = JSON.parse(localStorage.getItem(LS_KEY));
 
     if (dataContactsFromLS) {
-      this.setState({ contacts: dataContactsFromLS });
+      return dataContactsFromLS;
     }
-  }
+    return [];
+  };
 
-  componentDidUpdate(prevProps, prevState) {
-    if (this.state.contacts !== prevState.contacts) {
-      localStorage.setItem(
-        App.LS_KEY.contacts,
-        JSON.stringify(this.state.contacts)
-      );
+  const [contacts, setContacts] = useState(initialContacts);
+
+  const [filter, setFilter] = useState('');
+
+  const isFirstRender = useRef(true);
+
+  useEffect(() => {
+    if (isFirstRender.current) {
+      isFirstRender.current = false;
+      return;
     }
-  }
+    localStorage.setItem(LS_KEY, JSON.stringify(contacts));
+  }, [contacts]);
 
-  addContact = ({ name, number }) => {
+  const addContact = ({ name, number }) => {
     const normalizedName = name.trim();
-    const existName = this.checkExistingName(normalizedName);
+    const existName = checkExistingName(normalizedName);
     if (existName) {
       alert(`${normalizedName} is already in contacts`);
       return;
@@ -51,28 +43,26 @@ export class App extends Component {
       number,
     };
 
-    this.setState(({ contacts }) => ({ contacts: [contact, ...contacts] }));
+    setContacts(prevState => [contact, ...prevState]);
   };
 
-  checkExistingName = newName => {
-    const { contacts } = this.state;
+  const checkExistingName = newName => {
     return contacts.find(
       contact => contact.name.toLowerCase() === newName.toLowerCase()
     );
   };
 
-  deleteContact = contactId => {
-    this.setState(prevState => ({
-      contacts: prevState.contacts.filter(contact => contact.id !== contactId),
-    }));
+  const deleteContact = contactId => {
+    setContacts(prevState =>
+      prevState.filter(contact => contact.id !== contactId)
+    );
   };
 
-  changeFilter = e => {
-    this.setState({ filter: e.currentTarget.value });
+  const changeFilter = e => {
+    setFilter(e.currentTarget.value);
   };
 
-  getVisibleContacts = () => {
-    const { filter, contacts } = this.state;
+  const getVisibleContacts = () => {
     const normalizedFilter = filter.toLowerCase();
 
     return contacts.filter(contact =>
@@ -80,26 +70,23 @@ export class App extends Component {
     );
   };
 
-  render() {
-    const visibleContacts = this.getVisibleContacts();
-    return (
-      <>
-        <GlobalStyle />
-        <Box
-          display="flex"
-          alignItems="center"
-          justifyContent="center"
-          flexDirection="column"
-          mt={5}
-        >
-          <ContactContainer
-            contacts={visibleContacts}
-            onSubmit={this.addContact}
-            onDeleteContact={this.deleteContact}
-            onFilter={this.changeFilter}
-          />
-        </Box>
-      </>
-    );
-  }
+  return (
+    <>
+      <GlobalStyle />
+      <Box
+        display="flex"
+        alignItems="center"
+        justifyContent="center"
+        flexDirection="column"
+        mt={5}
+      >
+        <ContactContainer
+          contacts={getVisibleContacts()}
+          onSubmit={addContact}
+          onDeleteContact={deleteContact}
+          onFilter={changeFilter}
+        />
+      </Box>
+    </>
+  );
 }
