@@ -8,7 +8,6 @@ import { TitlePrimary, TitleSecondary } from './ContactContainer.styled';
 export default function ContactContainer({
   contacts,
   onSubmit,
-  onDeleteContact,
   onFilter,
   filter,
 }) {
@@ -18,7 +17,7 @@ export default function ContactContainer({
       <ContactForm onSubmit={onSubmit} />
       <TitleSecondary>Contacts</TitleSecondary>
       <Filter onFilter={onFilter} filter={filter} />
-      <ContactList contacts={contacts} onDeleteContact={onDeleteContact} />
+      <ContactList contacts={contacts} />
     </Box>
   );
 }
@@ -26,7 +25,6 @@ export default function ContactContainer({
 ContactContainer.propTypes = {
   contacts: PropTypes.arrayOf(PropTypes.object).isRequired,
   onSubmit: PropTypes.func.isRequired,
-  onDeleteContact: PropTypes.func.isRequired,
   onFilter: PropTypes.func.isRequired,
   filter: PropTypes.string.isRequired,
 };

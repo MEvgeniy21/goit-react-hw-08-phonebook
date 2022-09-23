@@ -3,35 +3,37 @@ import { useState, useEffect, useRef } from 'react';
 import { nanoid } from 'nanoid';
 import { Box } from 'common/Box';
 import { useSearchParams } from 'react-router-dom';
+import { useSelector, useDispatch } from 'react-redux';
+import { addContacts } from 'redux/contactsSlice';
+import { getContacts } from 'redux/selectors';
 
 export function Home() {
   const LS_KEY = 'contacts';
+  const contacts = useSelector(getContacts);
+  const dispatch = useDispatch();
+  //   const initialContacts = () => {
+  //     const dataContactsFromLS = JSON.parse(localStorage.getItem(LS_KEY));
 
-  const initialContacts = () => {
-    const dataContactsFromLS = JSON.parse(localStorage.getItem(LS_KEY));
-
-    if (dataContactsFromLS) {
-      return dataContactsFromLS;
-    }
-    return [];
-  };
+  //     if (dataContactsFromLS) {
+  //       return dataContactsFromLS;
+  //     }
+  //     return [];
+  //   };
 
   const [searchParams, setSearchParams] = useSearchParams();
   const filterValue = searchParams.get('filter') ?? '';
 
-  const [contacts, setContacts] = useState(initialContacts);
-
   const [filter, setFilter] = useState(filterValue);
 
-  const isFirstRender = useRef(true);
+  //   const isFirstRender = useRef(true);
 
-  useEffect(() => {
-    if (isFirstRender.current) {
-      isFirstRender.current = false;
-      return;
-    }
-    localStorage.setItem(LS_KEY, JSON.stringify(contacts));
-  }, [contacts]);
+  //   useEffect(() => {
+  //     if (isFirstRender.current) {
+  //       isFirstRender.current = false;
+  //       return;
+  //     }
+  //     localStorage.setItem(LS_KEY, JSON.stringify(contacts));
+  //   }, [contacts]);
 
   const addContact = ({ name, number }) => {
     const normalizedName = name.trim();
@@ -40,24 +42,18 @@ export function Home() {
       alert(`${normalizedName} is already in contacts`);
       return;
     }
-    const contact = {
-      id: nanoid(),
-      name: normalizedName,
-      number,
-    };
-
-    setContacts(prevState => [contact, ...prevState]);
+    dispatch(
+      addContacts({
+        id: nanoid(),
+        name: normalizedName,
+        number,
+      })
+    );
   };
 
   const checkExistingName = newName => {
     return contacts.find(
       contact => contact.name.toLowerCase() === newName.toLowerCase()
-    );
-  };
-
-  const deleteContact = contactId => {
-    setContacts(prevState =>
-      prevState.filter(contact => contact.id !== contactId)
     );
   };
 
@@ -86,7 +82,6 @@ export function Home() {
       <ContactContainer
         contacts={getVisibleContacts()}
         onSubmit={addContact}
-        onDeleteContact={deleteContact}
         onFilter={changeFilter}
         filter={filter}
       />
