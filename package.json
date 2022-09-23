@@ -1,8 +1,8 @@
 {
-  "name": "goit-react-hw-04-phonebook",
+  "name": "goit-react-hw-06-phonebook",
   "version": "0.1.0",
   "private": true,
-  "homepage": "https://MEvgeniy21.github.io/goit-react-hw-04-phonebook/",
+  "homepage": "https://MEvgeniy21.github.io/goit-react-hw-06-phonebook/",
   "dependencies": {
     "@emotion/react": "^11.10.0",
     "@emotion/styled": "^11.10.0",
@@ -15,6 +15,7 @@
     "prop-types": "^15.8.1",
     "react": "^18.1.0",
     "react-dom": "^18.1.0",
+    "react-router-dom": "^6.4.1",
     "react-scripts": "5.0.1",
     "styled-system": "^5.1.5",
     "web-vitals": "^2.1.3",

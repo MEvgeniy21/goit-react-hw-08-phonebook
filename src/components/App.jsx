@@ -1,8 +1,9 @@
+import ContactContainer from 'components/ContactContainer';
 import { useState, useEffect, useRef } from 'react';
 import { GlobalStyle } from 'GlobalStyle';
 import { nanoid } from 'nanoid';
 import { Box } from 'common/Box';
-import ContactContainer from 'components/ContactContainer';
+import { Routes, Route } from 'react-router-dom';
 
 export function App() {
   const LS_KEY = 'contacts';
@@ -73,20 +74,28 @@ export function App() {
   return (
     <>
       <GlobalStyle />
-      <Box
-        display="flex"
-        alignItems="center"
-        justifyContent="center"
-        flexDirection="column"
-        mt={5}
-      >
-        <ContactContainer
-          contacts={getVisibleContacts()}
-          onSubmit={addContact}
-          onDeleteContact={deleteContact}
-          onFilter={changeFilter}
+
+      <Routes>
+        <Route
+          path="/"
+          element={
+            <Box
+              display="flex"
+              alignItems="center"
+              justifyContent="center"
+              flexDirection="column"
+              mt={5}
+            >
+              <ContactContainer
+                contacts={getVisibleContacts()}
+                onSubmit={addContact}
+                onDeleteContact={deleteContact}
+                onFilter={changeFilter}
+              />
+            </Box>
+          }
         />
-      </Box>
+      </Routes>
     </>
   );
 }
