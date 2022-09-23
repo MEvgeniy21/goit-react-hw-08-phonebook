@@ -10,13 +10,14 @@ export default function ContactContainer({
   onSubmit,
   onDeleteContact,
   onFilter,
+  filter,
 }) {
   return (
     <Box display="flex" alignItems="start" flexDirection="column">
       <TitlePrimary>Phonebook</TitlePrimary>
       <ContactForm onSubmit={onSubmit} />
       <TitleSecondary>Contacts</TitleSecondary>
-      <Filter onFilter={onFilter} />
+      <Filter onFilter={onFilter} filter={filter} />
       <ContactList contacts={contacts} onDeleteContact={onDeleteContact} />
     </Box>
   );
@@ -27,4 +28,5 @@ ContactContainer.propTypes = {
   onSubmit: PropTypes.func.isRequired,
   onDeleteContact: PropTypes.func.isRequired,
   onFilter: PropTypes.func.isRequired,
+  filter: PropTypes.string.isRequired,
 };
