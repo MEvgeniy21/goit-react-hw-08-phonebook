@@ -11,12 +11,6 @@ const contactsInitialState = () => {
   return [];
 };
 
-const checkExistingName = ({ state, newName }) => {
-  return state.find(
-    contact => contact.name.toLowerCase() === newName.toLowerCase()
-  );
-};
-
 const setLS = state => {
   localStorage.setItem(LS_KEY, JSON.stringify(state));
 };
@@ -27,12 +21,6 @@ const contactsSlice = createSlice({
   reducers: {
     addContacts: {
       reducer(state, action) {
-        const newName = action.payload.name;
-        const existName = checkExistingName({ state, newName });
-        if (existName) {
-          alert(`${newName} is already in contacts`);
-          return;
-        }
         state.push(action.payload);
         setLS(state);
       },
@@ -40,7 +28,7 @@ const contactsSlice = createSlice({
         return {
           payload: {
             id: nanoid(),
-            name: name.trim(),
+            name,
             number,
           },
         };

@@ -4,6 +4,7 @@ import { FormBlock, Label } from './ContactForm.styled';
 import { Box } from 'common/Box';
 import { useDispatch } from 'react-redux';
 import { addContacts } from 'redux/contactsSlice';
+import { useCheckExistingName } from 'hooks';
 
 const INITIAL_VALUE = { name: '', number: '' };
 
@@ -27,10 +28,17 @@ let schema = yup.object().shape({
 
 export default function ContactForm() {
   const dispatch = useDispatch();
+  const checkExistingName = useCheckExistingName();
 
   const handleSubmit = (values, actions) => {
-    // { name, number } = values
-    dispatch(addContacts(values));
+    const { name, number } = values;
+    const newName = name.trim();
+    const existName = checkExistingName(newName);
+    if (existName) {
+      alert(`${newName} is already in contacts`);
+      return;
+    }
+    dispatch(addContacts({ name: newName, number }));
     actions.resetForm();
   };
 
