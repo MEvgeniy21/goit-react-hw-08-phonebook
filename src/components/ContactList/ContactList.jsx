@@ -1,8 +1,10 @@
-import PropTypes from 'prop-types';
 import ContactItem from 'components/ContactItem';
 import { List } from './ContactList.styled';
+import { useContacts } from 'hooks/useContacts';
 
-export default function ContactList({ contacts }) {
+export default function ContactList() {
+  const contacts = useContacts();
+
   return (
     <List>
       {contacts.map(({ id, name, number }) => (
@@ -13,7 +15,3 @@ export default function ContactList({ contacts }) {
     </List>
   );
 }
-
-ContactList.propTypes = {
-  contacts: PropTypes.arrayOf(PropTypes.object).isRequired,
-};
