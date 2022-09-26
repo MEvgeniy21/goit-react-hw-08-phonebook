@@ -15,7 +15,7 @@ export default function Filter() {
   }, [dispatch, filterValue]);
 
   const handleFilter = e => {
-    const value = e.currentTarget.value;
+    const value = e.currentTarget.value.trim();
     setSearchParams(value ? { filter: value } : {});
   };
 
