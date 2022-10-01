@@ -1,7 +1,8 @@
 import PropTypes from 'prop-types';
 import { Box } from 'common/Box';
-import { deleteContacts } from 'redux/contactsSlice';
+// import { deleteContacts } from 'redux/contactsSlice';
 import { useDispatch } from 'react-redux';
+import { deleteContacts } from 'redux/operations';
 
 export default function ContactItem({ id, name, number }) {
   const dispatch = useDispatch();

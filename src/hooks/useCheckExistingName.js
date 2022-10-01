@@ -1,8 +1,8 @@
 import { useSelector } from 'react-redux';
-import { selectItems } from 'redux/selectors';
+import { selectContacts } from 'redux/selectors';
 
 export const useCheckExistingName = () => {
-  const { contacts } = useSelector(selectItems);
+  const contacts = useSelector(selectContacts);
 
   return newName =>
     Boolean(

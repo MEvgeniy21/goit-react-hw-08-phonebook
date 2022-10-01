@@ -8,9 +8,9 @@ export default function ContactList() {
 
   return (
     <List>
-      {contacts.map(({ id, name, number }) => (
+      {contacts.map(({ id, name, phone }) => (
         <li key={id}>
-          <ContactItem id={id} name={name} number={number} />
+          <ContactItem id={id} name={name} number={phone} />
         </li>
       ))}
     </List>

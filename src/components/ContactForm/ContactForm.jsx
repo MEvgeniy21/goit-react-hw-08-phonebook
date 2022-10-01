@@ -3,8 +3,9 @@ import { Formik, Field, ErrorMessage } from 'formik';
 import { FormBlock, Label } from './ContactForm.styled';
 import { Box } from 'common/Box';
 import { useDispatch } from 'react-redux';
-import { addContacts } from 'redux/contactsSlice';
+// import { addContacts } from 'redux/contactsSlice';
 import { useCheckExistingName } from 'hooks';
+import { addContacts } from 'redux/operations';
 
 const INITIAL_VALUE = { name: '', number: '' };
 
@@ -38,7 +39,7 @@ export default function ContactForm() {
       alert(`${newName} is already in contacts`);
       return;
     }
-    dispatch(addContacts({ name: newName, number }));
+    dispatch(addContacts({ name: newName, phone: number }));
     actions.resetForm();
   };
 

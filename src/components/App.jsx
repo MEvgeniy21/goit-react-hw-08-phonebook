@@ -1,8 +1,17 @@
 import { GlobalStyle } from 'GlobalStyle';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import { Home } from 'page/Home';
+import { useDispatch } from 'react-redux';
+import { useEffect } from 'react';
+import { fetchContacts } from 'redux/operations';
 
 export function App() {
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch(fetchContacts());
+  }, [dispatch]);
+
   return (
     <>
       <GlobalStyle />
