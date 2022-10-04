@@ -35,7 +35,6 @@ export default function ContactItem({ id, name, number }) {
         <span>{number}</span>
         <SC.Button
           type="button"
-          position="relative"
           width={50}
           height={25}
           onClick={handleEdit}
@@ -46,7 +45,6 @@ export default function ContactItem({ id, name, number }) {
         </SC.Button>
         <SC.Button
           type="button"
-          position="relative"
           width={70}
           height={25}
           onClick={handleDelete}

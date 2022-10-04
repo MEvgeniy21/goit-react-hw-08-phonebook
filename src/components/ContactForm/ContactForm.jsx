@@ -67,7 +67,6 @@ export default function ContactForm() {
 
           <Box display="flex" alignItems="center" justifyContent="center">
             <ButtonSubmit
-              position="relative"
               validateForm={props.validateForm}
               width={100}
               height={25}

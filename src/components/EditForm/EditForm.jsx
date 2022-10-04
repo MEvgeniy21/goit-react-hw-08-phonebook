@@ -79,7 +79,6 @@ const EditForm = ({ id, name, number, onClose, isLoadingEdit }) => {
             </SC.Button>
             <ButtonSubmit
               validateForm={props.validateForm}
-              position="relative"
               width={50}
               height={25}
               disabled={isLoadingEdit}
