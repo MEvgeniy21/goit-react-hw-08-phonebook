@@ -1,17 +1,29 @@
 import ContactForm from 'components/ContactForm';
 import ContactList from 'components/ContactList';
 import Filter from 'components/Filter';
+import Loader from 'components/Loader';
+import * as SC from './ContactContainer.styled';
 import { Box } from 'common/Box';
-import { TitlePrimary, TitleSecondary } from './ContactContainer.styled';
+import { useSelector } from 'react-redux';
+import { selectIsLoadingGet } from 'redux/selectors';
 
 export default function ContactContainer() {
+  const isLoadingGet = useSelector(selectIsLoadingGet);
+
   return (
-    <Box display="flex" alignItems="start" flexDirection="column">
-      <TitlePrimary>Phonebook</TitlePrimary>
+    <SC.Container>
+      <SC.TitlePrimary>Phonebook</SC.TitlePrimary>
       <ContactForm />
-      <TitleSecondary>Contacts</TitleSecondary>
+      <SC.TitleSecondary>Contacts</SC.TitleSecondary>
       <Filter />
-      <ContactList />
-    </Box>
+
+      {isLoadingGet && (
+        <Box position="relative" width={1} height={100}>
+          <Loader />
+        </Box>
+      )}
+
+      {!isLoadingGet && <ContactList />}
+    </SC.Container>
   );
 }

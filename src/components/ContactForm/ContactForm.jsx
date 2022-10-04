@@ -1,45 +1,35 @@
-import * as yup from 'yup';
-import { Formik, Field, ErrorMessage } from 'formik';
-import { FormBlock, Label } from './ContactForm.styled';
+import InputField from 'components/InputField';
+import ButtonSubmit from 'components/ButtonSubmit';
+import Loader from 'components/Loader';
+import { Formik } from 'formik';
+import { schema } from 'common/schema';
+import * as SC from './ContactForm.styled';
 import { Box } from 'common/Box';
-import { useDispatch } from 'react-redux';
-// import { addContacts } from 'redux/contactsSlice';
+import { addContact } from 'redux/operations';
 import { useCheckExistingName } from 'hooks';
-import { addContacts } from 'redux/operations';
-
-const INITIAL_VALUE = { name: '', number: '' };
-
-let schema = yup.object().shape({
-  name: yup
-    .string()
-    .matches(
-      /^[a-zA-Zа-яА-Я]+(([' -][a-zA-Zа-яА-Я ])?[a-zA-Zа-яА-Я]*)*$/,
-      "Name may contain only letters, apostrophe, dash and spaces. For example Adrian, Jacob Mercer, Charles de Batz de Castelmore d'Artagnan"
-    )
-    .required(),
-  number: yup
-    .string()
-    .min(5)
-    .matches(
-      /\+?\d{1,4}?[-.\s]?\(?\d{1,3}?\)?[-.\s]?\d{1,4}[-.\s]?\d{1,4}[-.\s]?\d{1,9}/,
-      'Phone number must be digits and can contain spaces, dashes, parentheses and can start with +'
-    )
-    .required(),
-});
+import { nanoid } from '@reduxjs/toolkit';
+import { useRef } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { selectIsLoadingAdd } from 'redux/selectors';
+import { toast } from 'react-toastify';
 
 export default function ContactForm() {
+  const INITIAL_VALUE = { name: '', number: '' };
+  const isLoadingAdd = useSelector(selectIsLoadingAdd);
   const dispatch = useDispatch();
   const checkExistingName = useCheckExistingName();
+  const nameID = useRef(nanoid());
+  const numberID = useRef(nanoid());
 
-  const handleSubmit = (values, actions) => {
-    const { name, number } = values;
+  const handleSubmit = (val, actions) => {
+    const { name, number } = val;
     const newName = name.trim();
     const existName = checkExistingName(newName);
     if (existName) {
-      alert(`${newName} is already in contacts`);
+      toast.warning(`${newName} is already in contacts`);
       return;
     }
-    dispatch(addContacts({ name: newName, phone: number }));
+    dispatch(addContact({ name: newName, phone: number }));
     actions.resetForm();
   };
 
@@ -50,23 +40,44 @@ export default function ContactForm() {
       validationSchema={schema}
     >
       {props => (
-        <FormBlock autoComplete="off">
-          <Label htmlFor="name">
+        <SC.FormBlock autoComplete="off">
+          <SC.Label htmlFor={nameID}>
             Name
-            <Field type="text" name="name" id="name" required />
-          </Label>
-          <ErrorMessage name="name" component="p" />
+            <InputField
+              type="text"
+              name="name"
+              id={nameID}
+              disabled={isLoadingAdd}
+              onBlur={props.handleBlur}
+              required
+            />
+          </SC.Label>
 
-          <Label htmlFor="number">
+          <SC.Label htmlFor={numberID}>
             Number
-            <Field type="tel" name="number" id="number" required />
-          </Label>
-          <ErrorMessage name="number" component="p" />
+            <InputField
+              type="tel"
+              name="number"
+              id={numberID}
+              disabled={isLoadingAdd}
+              onBlur={props.handleBlur}
+              required
+            />
+          </SC.Label>
 
           <Box display="flex" alignItems="center" justifyContent="center">
-            <button type="submit">Add contact</button>
+            <ButtonSubmit
+              position="relative"
+              validateForm={props.validateForm}
+              width={100}
+              height={25}
+              disabled={isLoadingAdd}
+            >
+              {isLoadingAdd && <Loader width={20} />}
+              Add contact
+            </ButtonSubmit>
           </Box>
-        </FormBlock>
+        </SC.FormBlock>
       )}
     </Formik>
   );

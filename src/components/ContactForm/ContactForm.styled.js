@@ -2,7 +2,7 @@ import styled from '@emotion/styled';
 import { Form } from 'formik';
 
 export const FormBlock = styled(Form)`
-  width: 400px;
+  width: 100%;
   display: flex;
   flex-direction: column;
   gap: ${p => p.theme.space[4]}px;
