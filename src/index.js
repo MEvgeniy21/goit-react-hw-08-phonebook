@@ -9,7 +9,7 @@ import { Provider } from 'react-redux';
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
-    <BrowserRouter basename="/goit-react-hw-07-phonebook/">
+    <BrowserRouter basename="/goit-react-hw-08-phonebook/">
       <Provider store={store}>
         <ThemeProvider theme={theme}>
           <App />
