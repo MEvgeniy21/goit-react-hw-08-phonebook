@@ -2,25 +2,36 @@ import PropTypes from 'prop-types';
 import Loader from 'components/Loader';
 import EditForm from 'components/EditForm';
 import { Box } from 'common/Box';
-import { useDispatch, useSelector } from 'react-redux';
-import { selectLoadingDel, selectLoadingEdit } from 'redux/selectors';
-import { deleteContact } from 'redux/operations';
+import { toast } from 'react-toastify';
 import * as SC from './ContactItem.styled';
 import { useState } from 'react';
+import {
+  useDeleteContactMutation,
+  useUpdateContactMutation,
+} from 'redux/contactsSlice';
 
 export default function ContactItem({ id, name, number }) {
   const [isEdit, setIsEdit] = useState(false);
-  const isLoadingDel = useSelector(selectLoadingDel).includes(id);
-  const isLoadingEdit = useSelector(selectLoadingEdit).includes(id);
+  const [deleteContact, { isLoading: isLoadingDel }] =
+    useDeleteContactMutation();
+  const [updateContact, { isLoading: isLoadingEdit }] =
+    useUpdateContactMutation();
 
-  const dispatch = useDispatch();
-
-  const handleDelete = () => {
-    dispatch(deleteContact(id));
+  const handleDelete = async () => {
+    try {
+      const { error } = await deleteContact(id);
+      if (error) {
+        toast.error(`Error: ${error.status} - "${error.data}"`);
+      } else {
+        toast.success(`contact - "${name}: ${number}" has been deleted`);
+      }
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   const handleEdit = () => {
-    setIsEdit(prev => !prev);
+    setIsEdit(true);
   };
 
   if (!isEdit) {
@@ -62,8 +73,9 @@ export default function ContactItem({ id, name, number }) {
         id={id}
         name={name}
         number={number}
-        onClose={handleEdit}
+        onEdit={setIsEdit}
         isLoadingEdit={isLoadingEdit}
+        updateContact={updateContact}
       />
     );
   }

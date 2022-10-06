@@ -7,32 +7,47 @@ import { Formik } from 'formik';
 import { schema } from 'common/schema';
 import * as SC from './EditForm.styled';
 import { Box } from 'common/Box';
-import { editContact } from 'redux/operations';
-import { usePreviousValue } from 'hooks';
 import { nanoid } from '@reduxjs/toolkit';
-import { useRef, useEffect } from 'react';
-import { useDispatch } from 'react-redux';
+import { useRef } from 'react';
+import { toast } from 'react-toastify';
 
-const EditForm = ({ id, name, number, onClose, isLoadingEdit }) => {
+const EditForm = ({
+  id,
+  name,
+  number,
+  onEdit,
+  isLoadingEdit,
+  updateContact,
+}) => {
   const INITIAL_VALUE = { name, number };
-  const dispatch = useDispatch();
   const nameID = useRef(nanoid());
   const numberID = useRef(nanoid());
-  const prevIsLoadingEdit = usePreviousValue(isLoadingEdit);
 
-  useEffect(() => {
-    if (prevIsLoadingEdit && !isLoadingEdit) {
-      onClose();
-    }
-  }, [isLoadingEdit, onClose, prevIsLoadingEdit]);
+  const onClose = () => {
+    onEdit(false);
+  };
 
-  const handleSubmit = (val, actions) => {
+  const handleSubmit = async (val, actions) => {
     const newName = val.name.trim();
     if (newName === name && val.number === number) {
       onClose();
       return;
     }
-    dispatch(editContact({ id, name: newName, phone: val.number }));
+    try {
+      const { error } = await updateContact({
+        id,
+        name: newName,
+        phone: val.number,
+      });
+      if (error) {
+        toast.error(`Error: ${error.status} - "${error.data}"`);
+      } else {
+        toast.success(`contact - "${name}: ${val.number}" has been edited`);
+        onClose();
+      }
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   return (
@@ -97,8 +112,9 @@ EditForm.propTypes = {
   id: PropTypes.string.isRequired,
   name: PropTypes.string.isRequired,
   number: PropTypes.string.isRequired,
-  onClose: PropTypes.func.isRequired,
+  onEdit: PropTypes.func.isRequired,
   isLoadingEdit: PropTypes.bool.isRequired,
+  updateContact: PropTypes.func.isRequired,
 };
 
 export default EditForm;

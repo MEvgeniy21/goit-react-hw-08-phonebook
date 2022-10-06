@@ -5,23 +5,20 @@ import { Formik } from 'formik';
 import { schema } from 'common/schema';
 import * as SC from './ContactForm.styled';
 import { Box } from 'common/Box';
-import { addContact } from 'redux/operations';
 import { useCheckExistingName } from 'hooks';
 import { nanoid } from '@reduxjs/toolkit';
 import { useRef } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { selectIsLoadingAdd } from 'redux/selectors';
 import { toast } from 'react-toastify';
+import { useAddContactMutation } from 'redux/contactsSlice';
 
 export default function ContactForm() {
   const INITIAL_VALUE = { name: '', number: '' };
-  const isLoadingAdd = useSelector(selectIsLoadingAdd);
-  const dispatch = useDispatch();
+  const [addContact, { isLoading }] = useAddContactMutation();
   const checkExistingName = useCheckExistingName();
   const nameID = useRef(nanoid());
   const numberID = useRef(nanoid());
 
-  const handleSubmit = (val, actions) => {
+  const handleSubmit = async (val, actions) => {
     const { name, number } = val;
     const newName = name.trim();
     const existName = checkExistingName(newName);
@@ -29,7 +26,16 @@ export default function ContactForm() {
       toast.warning(`${newName} is already in contacts`);
       return;
     }
-    dispatch(addContact({ name: newName, phone: number }));
+    try {
+      const { error } = await addContact({ name: newName, phone: number });
+      if (error) {
+        toast.error(`Error: ${error.status} - "${error.data}"`);
+      } else {
+        toast.success(`contact - "${newName}: ${number}" has been added`);
+      }
+    } catch (error) {
+      console.log(error);
+    }
     actions.resetForm();
   };
 
@@ -47,7 +53,7 @@ export default function ContactForm() {
               type="text"
               name="name"
               id={nameID}
-              disabled={isLoadingAdd}
+              disabled={isLoading}
               onBlur={props.handleBlur}
               required
             />
@@ -59,7 +65,7 @@ export default function ContactForm() {
               type="tel"
               name="number"
               id={numberID}
-              disabled={isLoadingAdd}
+              disabled={isLoading}
               onBlur={props.handleBlur}
               required
             />
@@ -70,9 +76,9 @@ export default function ContactForm() {
               validateForm={props.validateForm}
               width={100}
               height={25}
-              disabled={isLoadingAdd}
+              disabled={isLoading}
             >
-              {isLoadingAdd && <Loader width={20} />}
+              {isLoading && <Loader width={20} />}
               Add contact
             </ButtonSubmit>
           </Box>

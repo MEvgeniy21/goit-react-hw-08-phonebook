@@ -1,13 +1,14 @@
-import { useSelector } from 'react-redux';
-import { selectContacts } from 'redux/selectors';
+import { useGetContactsQuery } from 'redux/contactsSlice';
 
 export const useCheckExistingName = () => {
-  const contacts = useSelector(selectContacts);
-
-  return newName =>
-    Boolean(
-      contacts.find(
-        contact => contact.name.toLowerCase() === newName.toLowerCase()
-      )
-    );
+  const { data, error, isLoading } = useGetContactsQuery();
+  if (!isLoading && !error) {
+    return newName =>
+      Boolean(
+        data.find(
+          contact => contact.name.toLowerCase() === newName.toLowerCase()
+        )
+      );
+  }
+  return false;
 };

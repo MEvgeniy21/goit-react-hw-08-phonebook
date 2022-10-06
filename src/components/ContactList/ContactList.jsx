@@ -1,15 +1,23 @@
 import ContactItem from 'components/ContactItem';
+import Loader from 'components/Loader';
+import { Box } from 'common/Box';
 import { List } from './ContactList.styled';
-import { selectFilterContacts } from 'redux/selectors';
-import { useSelector } from 'react-redux';
+import { useContacts } from 'hooks/useContacts';
 
 export default function ContactList() {
-  const contacts = useSelector(selectFilterContacts);
+  const { data, error, isLoading } = useContacts();
 
-  if (contacts.length) {
+  if (isLoading) {
+    return (
+      <Box position="relative" width={1} height={100}>
+        <Loader />
+      </Box>
+    );
+  }
+  if (!isLoading && !error && data?.length) {
     return (
       <List>
-        {contacts.map(({ id, name, phone }) => (
+        {data.map(({ id, name, phone }) => (
           <li key={id}>
             <ContactItem id={id} name={name} number={phone} />
           </li>
@@ -17,11 +25,14 @@ export default function ContactList() {
       </List>
     );
   }
-  if (!contacts.length) {
+  if (!isLoading && !error && !data?.length) {
+    return <div>Contacts not found</div>;
+  }
+  if (!isLoading && error) {
     return (
-      <List>
-        <li>Contacts not found</li>
-      </List>
+      <div>
+        Error: {error.status} - "{error.data}"
+      </div>
     );
   }
 }
