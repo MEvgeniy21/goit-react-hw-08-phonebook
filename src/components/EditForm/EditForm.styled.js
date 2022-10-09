@@ -2,6 +2,7 @@ import styled from '@emotion/styled';
 import { Form } from 'formik';
 
 export const FormBlock = styled(Form)`
+  position: relative;
   width: 100%;
   display: flex;
   justify-content: space-between;

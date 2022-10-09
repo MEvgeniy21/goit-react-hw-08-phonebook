@@ -71,8 +71,6 @@ export default function ContactItem({ id, name, number }) {
     return (
       <EditForm
         id={id}
-        name={name}
-        number={number}
         onEdit={setIsEdit}
         isLoadingEdit={isLoadingEdit}
         updateContact={updateContact}

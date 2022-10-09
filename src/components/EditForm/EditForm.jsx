@@ -10,16 +10,16 @@ import { Box } from 'common/Box';
 import { nanoid } from '@reduxjs/toolkit';
 import { useRef } from 'react';
 import { toast } from 'react-toastify';
+import { useGetContactByIdQuery } from 'redux/contactsSlice';
 
-const EditForm = ({
-  id,
-  name,
-  number,
-  onEdit,
-  isLoadingEdit,
-  updateContact,
-}) => {
-  const INITIAL_VALUE = { name, number };
+const EditForm = ({ id, onEdit, isLoadingEdit, updateContact }) => {
+  const {
+    data,
+    error: errorData,
+    isLoading: isLoadingData,
+  } = useGetContactByIdQuery(id);
+
+  const INITIAL_VALUE = { name: data?.name, number: data?.phone };
   const nameID = useRef(nanoid());
   const numberID = useRef(nanoid());
 
@@ -29,7 +29,7 @@ const EditForm = ({
 
   const handleSubmit = async (val, actions) => {
     const newName = val.name.trim();
-    if (newName === name && val.number === number) {
+    if (newName === data?.name && val.number === data?.phone) {
       onClose();
       return;
     }
@@ -42,7 +42,7 @@ const EditForm = ({
       if (error) {
         toast.error(`Error: ${error.status} - "${error.data}"`);
       } else {
-        toast.success(`contact - "${name}: ${val.number}" has been edited`);
+        toast.success(`contact - "${newName}: ${val.number}" has been edited`);
         onClose();
       }
     } catch (error) {
@@ -50,8 +50,14 @@ const EditForm = ({
     }
   };
 
+  if (!isLoadingData && errorData) {
+    toast.error(`Error: ${errorData.status} - "${errorData.data}"`);
+    onClose();
+  }
+
   return (
     <Formik
+      enableReinitialize={true}
       initialValues={INITIAL_VALUE}
       onSubmit={handleSubmit}
       validationSchema={schema}
@@ -65,7 +71,7 @@ const EditForm = ({
                 type="text"
                 name="name"
                 id={nameID}
-                disabled={isLoadingEdit}
+                disabled={isLoadingEdit || isLoadingData}
                 onBlur={props.handleBlur}
                 required
               />
@@ -76,7 +82,7 @@ const EditForm = ({
                 type="tel"
                 name="number"
                 id={numberID}
-                disabled={isLoadingEdit}
+                disabled={isLoadingEdit || isLoadingData}
                 onBlur={props.handleBlur}
                 required
               />
@@ -96,12 +102,13 @@ const EditForm = ({
               validateForm={props.validateForm}
               width={50}
               height={25}
-              disabled={isLoadingEdit}
+              disabled={isLoadingEdit || isLoadingData}
             >
               {isLoadingEdit && <Loader width={20} />}
               edit
             </ButtonSubmit>
           </Box>
+          {isLoadingData && <Loader width={60} />}
         </SC.FormBlock>
       )}
     </Formik>
@@ -110,8 +117,6 @@ const EditForm = ({
 
 EditForm.propTypes = {
   id: PropTypes.string.isRequired,
-  name: PropTypes.string.isRequired,
-  number: PropTypes.string.isRequired,
   onEdit: PropTypes.func.isRequired,
   isLoadingEdit: PropTypes.bool.isRequired,
   updateContact: PropTypes.func.isRequired,
