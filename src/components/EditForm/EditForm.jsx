@@ -8,7 +8,7 @@ import { schema } from 'common/schema';
 import * as SC from './EditForm.styled';
 import { Box } from 'common/Box';
 import { nanoid } from '@reduxjs/toolkit';
-import { useRef } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { toast } from 'react-toastify';
 import { useGetContactByIdQuery } from 'redux/contactsSlice';
 
@@ -19,9 +19,18 @@ const EditForm = ({ id, onEdit, isLoadingEdit, updateContact }) => {
     isLoading: isLoadingData,
   } = useGetContactByIdQuery(id);
 
-  const INITIAL_VALUE = { name: data?.name, number: data?.phone };
+  const [initialValue, setInitialValue] = useState({ name: '', number: '' });
   const nameID = useRef(nanoid());
   const numberID = useRef(nanoid());
+
+  const isFirstInputChange = useRef(true);
+
+  useEffect(() => {
+    if (!isLoadingData && isFirstInputChange.current) {
+      isFirstInputChange.current = false;
+      setInitialValue({ name: data?.name, number: data?.phone });
+    }
+  }, [data?.name, data?.phone, isLoadingData]);
 
   const onClose = () => {
     onEdit(false);
@@ -58,7 +67,7 @@ const EditForm = ({ id, onEdit, isLoadingEdit, updateContact }) => {
   return (
     <Formik
       enableReinitialize={true}
-      initialValues={INITIAL_VALUE}
+      initialValues={initialValue}
       onSubmit={handleSubmit}
       validationSchema={schema}
     >
