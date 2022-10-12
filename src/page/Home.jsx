@@ -1,16 +1,9 @@
-import ContactContainer from 'components/ContactContainer';
-import { Box } from 'common/Box';
+import Title from 'components/Title';
 
-export function Home() {
+export default function Home() {
   return (
-    <Box
-      display="flex"
-      alignItems="center"
-      justifyContent="center"
-      flexDirection="column"
-      mt={5}
-    >
-      <ContactContainer />
-    </Box>
+    <Title mt={2}>
+      Phone contact book <span>, please register to use</span>
+    </Title>
   );
 }

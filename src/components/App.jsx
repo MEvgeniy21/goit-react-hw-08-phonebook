@@ -1,6 +1,8 @@
 import { GlobalStyle } from 'GlobalStyle';
 import { Routes, Route, Navigate } from 'react-router-dom';
-import { Home } from 'page/Home';
+import SharedLayout from 'components/SharedLayout';
+import Home from 'page/Home';
+import Phonebook from 'page/Phonebook';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
@@ -10,8 +12,11 @@ export function App() {
       <GlobalStyle />
 
       <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="*" element={<Navigate to="/" replace />} />
+        <Route path="/" element={<SharedLayout />}>
+          <Route index element={<Home />} />
+          <Route path="phonebook" element={<Phonebook />} />
+          <Route path="*" element={<Navigate to="/" replace />} />
+        </Route>
       </Routes>
       <ToastContainer />
     </>
