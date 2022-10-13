@@ -15,7 +15,7 @@ const token = {
 
 export const authRegister = createAsyncThunk(
   'auth/register',
-  async userData => {
+  async (userData, thunkAPI) => {
     try {
       const { data } = await axios.post('/users/signup', userData);
       token.set(data.token);
@@ -23,30 +23,39 @@ export const authRegister = createAsyncThunk(
       return data;
     } catch (error) {
       toast.error(`There was a registration error`);
+      return thunkAPI.rejectWithValue(error.message);
     }
   }
 );
 
-export const authLogIn = createAsyncThunk('auth/login', async userData => {
-  try {
-    const { data } = await axios.post('/users/login', userData);
-    token.set(data.token);
-    toast.success(`${data.user.name} has been login`);
-    return data;
-  } catch (error) {
-    toast.error(`There was a login error`);
+export const authLogIn = createAsyncThunk(
+  'auth/login',
+  async (userData, thunkAPI) => {
+    try {
+      const { data } = await axios.post('/users/login', userData);
+      token.set(data.token);
+      toast.success(`${data.user.name} has been login`);
+      return data;
+    } catch (error) {
+      toast.error(`There was a login error`);
+      return thunkAPI.rejectWithValue(error.message);
+    }
   }
-});
+);
 
-export const authLogOut = createAsyncThunk('auth/logout', async () => {
-  try {
-    await axios.post('/users/logout');
-    token.unset();
-    toast.success(`Logout completed`);
-  } catch (error) {
-    toast.error(`There was a logout error`);
+export const authLogOut = createAsyncThunk(
+  'auth/logout',
+  async (_, thunkAPI) => {
+    try {
+      await axios.post('/users/logout');
+      token.unset();
+      toast.success(`Logout completed`);
+    } catch (error) {
+      toast.error(`There was a logout error`);
+      return thunkAPI.rejectWithValue(error.message);
+    }
   }
-});
+);
 
 export const fetchCurrentUser = createAsyncThunk(
   'auth/refresh',
@@ -56,7 +65,9 @@ export const fetchCurrentUser = createAsyncThunk(
 
     if (persistedToken === null) {
       // console.log('Токена нет, уходим из fetchCurrentUser');
-      return thunkAPI.rejectWithValue();
+      return thunkAPI.rejectWithValue(
+        'There is no token, we leave fetchCurrentUser'
+      );
     }
 
     token.set(persistedToken);
@@ -65,6 +76,7 @@ export const fetchCurrentUser = createAsyncThunk(
       return data;
     } catch (error) {
       toast.error(`There was a refreshUser error`);
+      return thunkAPI.rejectWithValue(error.message);
     }
   }
 );

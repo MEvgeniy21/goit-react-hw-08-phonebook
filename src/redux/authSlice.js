@@ -42,6 +42,8 @@ const authSlice = createSlice({
       state.isLoadingLogIn = false;
     },
     [authLogIn.rejected](state, action) {
+      console.log('state: ', state);
+      console.log('action: ', action);
       state.isLoadingLogIn = false;
     },
     [authLogOut.pending](state, action) {

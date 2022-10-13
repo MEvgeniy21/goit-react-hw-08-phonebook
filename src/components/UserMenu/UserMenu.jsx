@@ -16,7 +16,7 @@ const UserMenu = () => {
   return (
     <SC.Wrap>
       <SC.Text>
-        Welcom <SC.User>{user.name}</SC.User>
+        <SC.User>{user.name}</SC.User> ({user.email})
       </SC.Text>
       <SC.Button
         type="button"
