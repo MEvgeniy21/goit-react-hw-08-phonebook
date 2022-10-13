@@ -5,6 +5,7 @@ export const Container = styled.div`
   display: flex;
   flex-direction: column;
   align-items: start;
+  margin-top: ${p => p.theme.space[4]}px;
 `;
 
 export const TitleSecondary = styled.h2`

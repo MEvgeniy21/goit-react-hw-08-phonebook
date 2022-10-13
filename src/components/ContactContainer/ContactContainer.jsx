@@ -7,9 +7,7 @@ import * as SC from './ContactContainer.styled';
 export default function ContactContainer() {
   return (
     <SC.Container>
-      <Title mt={2} mb={5}>
-        Phonebook
-      </Title>
+      <Title mb={5}>Phonebook</Title>
       <ContactForm />
       <SC.TitleSecondary>Contacts</SC.TitleSecondary>
       <Filter />
