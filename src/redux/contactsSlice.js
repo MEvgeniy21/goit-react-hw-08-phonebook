@@ -2,7 +2,7 @@
 import { createApi } from '@reduxjs/toolkit/query/react';
 import axios from 'axios';
 
-axios.defaults.baseURL = 'https://63385ecf937ea77bfdbf0d7e.mockapi.io/api';
+// axios.defaults.baseURL = 'https://63385ecf937ea77bfdbf0d7e.mockapi.io/api';
 // axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
 // axios.defaults.headers.post['Content-Type'] = 'application/json';
 

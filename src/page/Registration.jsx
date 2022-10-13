@@ -1,12 +1,18 @@
 import Title from 'components/Title';
 import { Formik, Field } from 'formik';
+import { useDispatch } from 'react-redux';
+import { authRegister } from 'redux/authOperations';
 import * as SC from './Auth.styled';
 
 const Registration = () => {
+  const dispatch = useDispatch();
   const INITIAL_VALUE = { name: '', email: '', password: '' };
 
   const handleSubmit = (val, actions) => {
-    console.log(val);
+    const { name, email, password } = val;
+    const normName = name.trim();
+    dispatch(authRegister({ name: normName, email, password }));
+    actions.resetForm();
   };
 
   return (

@@ -1,12 +1,16 @@
 import Title from 'components/Title';
 import { Formik, Field } from 'formik';
+import { useDispatch } from 'react-redux';
+import { authLogIn } from 'redux/authOperations';
 import * as SC from './Auth.styled';
 
 const Login = () => {
+  const dispatch = useDispatch();
   const INITIAL_VALUE = { email: '', password: '' };
 
   const handleSubmit = (val, actions) => {
-    console.log(val);
+    dispatch(authLogIn(val));
+    actions.resetForm();
   };
 
   return (
