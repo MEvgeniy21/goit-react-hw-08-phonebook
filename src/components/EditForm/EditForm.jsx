@@ -8,29 +8,20 @@ import { schema } from 'common/schema';
 import * as SC from './EditForm.styled';
 import { Box } from 'common/Box';
 import { nanoid } from '@reduxjs/toolkit';
-import { useEffect, useState, useRef } from 'react';
+import { useRef } from 'react';
 import { toast } from 'react-toastify';
-import { useGetContactByIdQuery } from 'redux/contactsSlice';
 
-const EditForm = ({ id, onEdit, isLoadingEdit, updateContact }) => {
-  const {
-    data,
-    error: errorData,
-    isLoading: isLoadingData,
-  } = useGetContactByIdQuery(id);
-
-  const [initialValue, setInitialValue] = useState({ name: '', number: '' });
+const EditForm = ({
+  id,
+  name,
+  number,
+  onEdit,
+  isLoadingEdit,
+  updateContact,
+}) => {
+  const INITIAL_VALUE = { name, number };
   const nameID = useRef(nanoid());
   const numberID = useRef(nanoid());
-
-  const isFirstInputChange = useRef(true);
-
-  useEffect(() => {
-    if (!isLoadingData && isFirstInputChange.current) {
-      isFirstInputChange.current = false;
-      setInitialValue({ name: data?.name, number: data?.phone });
-    }
-  }, [data?.name, data?.phone, isLoadingData]);
 
   const onClose = () => {
     onEdit(false);
@@ -38,7 +29,7 @@ const EditForm = ({ id, onEdit, isLoadingEdit, updateContact }) => {
 
   const handleSubmit = async (val, actions) => {
     const newName = val.name.trim();
-    if (newName === data?.name && val.number === data?.phone) {
+    if (newName === name && val.number === number) {
       onClose();
       return;
     }
@@ -46,10 +37,10 @@ const EditForm = ({ id, onEdit, isLoadingEdit, updateContact }) => {
       const { error } = await updateContact({
         id,
         name: newName,
-        phone: val.number,
+        number: val.number,
       });
       if (error) {
-        toast.error(`Error: ${error.status} - "${error.data}"`);
+        toast.error(`Contact editing error`);
       } else {
         toast.success(`contact - "${newName}: ${val.number}" has been edited`);
         onClose();
@@ -59,15 +50,9 @@ const EditForm = ({ id, onEdit, isLoadingEdit, updateContact }) => {
     }
   };
 
-  if (!isLoadingData && errorData) {
-    toast.error(`Error: ${errorData.status} - "${errorData.data}"`);
-    onClose();
-  }
-
   return (
     <Formik
-      enableReinitialize={true}
-      initialValues={initialValue}
+      initialValues={INITIAL_VALUE}
       onSubmit={handleSubmit}
       validationSchema={schema}
     >
@@ -80,7 +65,7 @@ const EditForm = ({ id, onEdit, isLoadingEdit, updateContact }) => {
                 type="text"
                 name="name"
                 id={nameID}
-                disabled={isLoadingEdit || isLoadingData}
+                disabled={isLoadingEdit}
                 onBlur={props.handleBlur}
                 required
               />
@@ -91,7 +76,7 @@ const EditForm = ({ id, onEdit, isLoadingEdit, updateContact }) => {
                 type="tel"
                 name="number"
                 id={numberID}
-                disabled={isLoadingEdit || isLoadingData}
+                disabled={isLoadingEdit}
                 onBlur={props.handleBlur}
                 required
               />
@@ -111,13 +96,12 @@ const EditForm = ({ id, onEdit, isLoadingEdit, updateContact }) => {
               validateForm={props.validateForm}
               width={50}
               height={25}
-              disabled={isLoadingEdit || isLoadingData}
+              disabled={isLoadingEdit}
             >
               {isLoadingEdit && <Loader width={20} />}
               edit
             </ButtonSubmit>
           </Box>
-          {isLoadingData && <Loader width={60} />}
         </SC.FormBlock>
       )}
     </Formik>
@@ -126,6 +110,8 @@ const EditForm = ({ id, onEdit, isLoadingEdit, updateContact }) => {
 
 EditForm.propTypes = {
   id: PropTypes.string.isRequired,
+  name: PropTypes.string.isRequired,
+  number: PropTypes.string.isRequired,
   onEdit: PropTypes.func.isRequired,
   isLoadingEdit: PropTypes.bool.isRequired,
   updateContact: PropTypes.func.isRequired,

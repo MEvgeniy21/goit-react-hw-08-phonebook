@@ -16,6 +16,7 @@ export const User = styled.span`
 `;
 
 export const Button = styled.button`
+  position: relative;
   width: 60px;
-  font-size: ${p => p.theme.fontSizes.m};
+  height: 25px;
 `;

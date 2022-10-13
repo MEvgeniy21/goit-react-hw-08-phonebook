@@ -21,7 +21,7 @@ export default function ContactItem({ id, name, number }) {
     try {
       const { error } = await deleteContact(id);
       if (error) {
-        toast.error(`Error: ${error.status} - "${error.data}"`);
+        toast.error(`Contact deletion error`);
       } else {
         toast.success(`contact - "${name}: ${number}" has been deleted`);
       }
@@ -71,6 +71,8 @@ export default function ContactItem({ id, name, number }) {
     return (
       <EditForm
         id={id}
+        name={name}
+        number={number}
         onEdit={setIsEdit}
         isLoadingEdit={isLoadingEdit}
         updateContact={updateContact}

@@ -17,9 +17,9 @@ export default function ContactList() {
   if (!isLoading && !error && data?.length) {
     return (
       <List>
-        {data.map(({ id, name, phone }) => (
+        {data.map(({ id, name, number }) => (
           <li key={id}>
-            <ContactItem id={id} name={name} number={phone} />
+            <ContactItem id={id} name={name} number={number} />
           </li>
         ))}
       </List>
@@ -29,10 +29,6 @@ export default function ContactList() {
     return <div>Contacts not found</div>;
   }
   if (!isLoading && error) {
-    return (
-      <div>
-        Error: {error.status} - "{error.data}"
-      </div>
-    );
+    return <div>Сontact getting error</div>;
   }
 }

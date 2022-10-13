@@ -19,5 +19,7 @@ export const Label = styled.label`
 `;
 
 export const BtnSubmit = styled.button`
+  position: relative;
   width: 100px;
+  height: 25px;
 `;

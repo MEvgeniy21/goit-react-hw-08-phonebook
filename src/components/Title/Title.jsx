@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import { Box } from 'common/Box';
 import * as SC from './Title.styled';
 
@@ -10,3 +11,11 @@ const Title = ({ children, pt = 0, pb = 0, mt = 0, mb = 0 }) => {
 };
 
 export default Title;
+
+Title.propTypes = {
+  children: PropTypes.any.isRequired,
+  pt: PropTypes.number,
+  pb: PropTypes.number,
+  mt: PropTypes.number,
+  mb: PropTypes.number,
+};

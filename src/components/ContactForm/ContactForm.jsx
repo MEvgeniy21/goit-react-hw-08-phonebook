@@ -27,9 +27,9 @@ export default function ContactForm() {
       return;
     }
     try {
-      const { error } = await addContact({ name: newName, phone: number });
+      const { error } = await addContact({ name: newName, number });
       if (error) {
-        toast.error(`Error: ${error.status} - "${error.data}"`);
+        toast.error(`Contact creation error`);
       } else {
         toast.success(`contact - "${newName}: ${number}" has been added`);
       }

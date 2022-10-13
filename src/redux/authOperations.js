@@ -1,5 +1,6 @@
 import axios from 'axios';
 import { createAsyncThunk } from '@reduxjs/toolkit';
+import { toast } from 'react-toastify';
 
 axios.defaults.baseURL = 'https://connections-api.herokuapp.com';
 
@@ -18,9 +19,10 @@ export const authRegister = createAsyncThunk(
     try {
       const { data } = await axios.post('/users/signup', userData);
       token.set(data.token);
+      toast.success(`${data.user.name} has been register`);
       return data;
     } catch (error) {
-      console.log('register error: ', error);
+      toast.error(`There was a registration error`);
     }
   }
 );
@@ -29,9 +31,10 @@ export const authLogIn = createAsyncThunk('auth/login', async userData => {
   try {
     const { data } = await axios.post('/users/login', userData);
     token.set(data.token);
+    toast.success(`${data.user.name} has been login`);
     return data;
   } catch (error) {
-    console.log('login error: ', error);
+    toast.error(`There was a login error`);
   }
 });
 
@@ -39,8 +42,9 @@ export const authLogOut = createAsyncThunk('auth/logout', async () => {
   try {
     await axios.post('/users/logout');
     token.unset();
+    toast.success(`Logout completed`);
   } catch (error) {
-    console.log('logout error: ', error);
+    toast.error(`There was a logout error`);
   }
 });
 
@@ -51,7 +55,7 @@ export const fetchCurrentUser = createAsyncThunk(
     const persistedToken = state.auth.token;
 
     if (persistedToken === null) {
-      console.log('Токена нет, уходим из fetchCurrentUser');
+      // console.log('Токена нет, уходим из fetchCurrentUser');
       return thunkAPI.rejectWithValue();
     }
 
@@ -60,7 +64,7 @@ export const fetchCurrentUser = createAsyncThunk(
       const { data } = await axios.get('/users/current');
       return data;
     } catch (error) {
-      console.log('fetchCurrentUser error: ', error);
+      toast.error(`There was a refreshUser error`);
     }
   }
 );

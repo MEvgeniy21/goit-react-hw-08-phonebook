@@ -3,8 +3,6 @@ import { createApi } from '@reduxjs/toolkit/query/react';
 import axios from 'axios';
 
 // axios.defaults.baseURL = 'https://63385ecf937ea77bfdbf0d7e.mockapi.io/api';
-// axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
-// axios.defaults.headers.post['Content-Type'] = 'application/json';
 
 const axiosBaseQuery =
   ({ baseUrl } = { baseUrl: '' }) =>
@@ -39,10 +37,6 @@ export const contactApi = createApi({
       query: () => ({ url: `/contacts`, method: 'GET' }),
       providesTags: ['Contacts'],
     }),
-    getContactById: builder.query({
-      query: id => ({ url: `/contacts/${id}`, method: 'GET' }),
-      providesTags: ['Contacts'],
-    }),
     addContact: builder.mutation({
       query: newContact => ({
         url: `/contacts`,
@@ -59,10 +53,10 @@ export const contactApi = createApi({
       invalidatesTags: ['Contacts'],
     }),
     updateContact: builder.mutation({
-      query: patch => ({
-        url: `/contacts/${patch.id}`,
-        method: 'PUT',
-        body: patch,
+      query: ({ id, name, number }) => ({
+        url: `/contacts/${id}`,
+        method: 'PATCH',
+        body: { name, number },
       }),
       invalidatesTags: ['Contacts'],
     }),
@@ -112,7 +106,6 @@ export const contactApi = createApi({
 
 export const {
   useGetContactsQuery,
-  useGetContactByIdQuery,
   useAddContactMutation,
   useDeleteContactMutation,
   useUpdateContactMutation,
